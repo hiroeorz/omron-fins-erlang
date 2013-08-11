@@ -43,7 +43,7 @@ start_port(SrcIP, Port) ->
 %% @end
 %%--------------------------------------------------------------------
 -spec read_dm_values(DstIP, Port, StartAddress, Count) -> 
-			    {ok, term()} |
+			    {ok, [non_neg_integer()]} |
 			    {error, timeout} |
 			    {error, omron_fins_error_code()} when
       DstIP :: inet:ip_address(),
@@ -94,7 +94,7 @@ write_dm_same_value(DstIP, Port, StartAddress, Count, Value) ->
 %% @end
 %%--------------------------------------------------------------------
 -spec read_dm_multi_values(DstIP, Port, AddressList) -> 
-				  ok |
+				  {ok, [non_neg_integer()]} |
 				  {error, timeout} |
 				  {error, omron_fins_error_code()} when
       DstIP :: inet:ip_address(),
