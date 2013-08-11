@@ -12,7 +12,7 @@ This application support communication to omron PLC from Erlang application.
 Install
 ------------------------------------------------------------------
 
-    $ git clone git@bitbucket.org:hiroeorz/omron-plc-erlang.git
+    $ git clone git@github.com:hiroeorz/omron-fins-erlang.git
     $ cd omron-plc-erlang
     $ make
 
