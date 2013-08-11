@@ -1,0 +1,5 @@
+%% encoding: UTF-8
+{application,omron_fins}.
+{packages,[]}.
+{modules,[omron_fins,omron_fins_app,omron_fins_driver,omron_fins_port,
+          omron_fins_port_manager,omron_fins_sup]}.

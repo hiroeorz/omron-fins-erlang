@@ -1,0 +1,9 @@
+*.beam
+ebin
+.eunit
+*~
+erl_crash.dump
+deps
+.DS_Store
+log
+eunit.coverage.xml

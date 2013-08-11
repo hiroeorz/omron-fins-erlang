@@ -1,0 +1,12 @@
+{application, omron_fins,
+ [
+  {description, ""},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib
+                 ]},
+  {mod, { omron_fins_app, []}},
+  {env, []}
+ ]}.
