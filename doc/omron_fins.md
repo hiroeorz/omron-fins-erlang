@@ -70,7 +70,7 @@ read PLC alert list.
 
 
 <pre><code>
-read_dm_multi_values(DstIP, Port, AddressList) -&gt; ok | {error, timeout} | {error, <a href="#type-omron_fins_error_code">omron_fins_error_code()</a>}
+read_dm_multi_values(DstIP, Port, AddressList) -&gt; {ok, [non_neg_integer()]} | {error, timeout} | {error, <a href="#type-omron_fins_error_code">omron_fins_error_code()</a>}
 </code></pre>
 
 <ul class="definitions"><li><code>DstIP = <a href="inet.md#type-ip_address">inet:ip_address()</a></code></li><li><code>Port = <a href="inet.md#type-port_number">inet:port_number()</a></code></li><li><code>AddressList = [non_neg_integer()]</code></li></ul>
@@ -82,7 +82,7 @@ read DM values from address list.
 
 
 <pre><code>
-read_dm_values(DstIP, Port, StartAddress, Count) -&gt; {ok, term()} | {error, timeout} | {error, <a href="#type-omron_fins_error_code">omron_fins_error_code()</a>}
+read_dm_values(DstIP, Port, StartAddress, Count) -&gt; {ok, [non_neg_integer()]} | {error, timeout} | {error, <a href="#type-omron_fins_error_code">omron_fins_error_code()</a>}
 </code></pre>
 
 <ul class="definitions"><li><code>DstIP = <a href="inet.md#type-ip_address">inet:ip_address()</a></code></li><li><code>Port = <a href="inet.md#type-port_number">inet:port_number()</a></code></li><li><code>StartAddress = non_neg_integer()</code></li><li><code>Count = non_neg_integer()</code></li></ul>
