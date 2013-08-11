@@ -215,10 +215,9 @@ wait_response() ->
 	{ok, Bin} ->
 	    case omron_fins_driver:parse_response(?IO_FACILITY_DM_CHANEL, 
 						  Bin) of
-		{error, Reason}             -> {error, Reason};
-		{error, ErrCode1, ErrCode2} -> {error, ErrCode1, ErrCode2};
-		ok                          -> ok;
-		Val                         -> {ok, Val}
+		{error, {ErrCode1, ErrCode2}} -> {error, ErrCode1, ErrCode2};
+		ok                            -> ok;
+		Val                           -> {ok, Val}
 	    end;
 	{error, Reason} ->
 	    {error, Reason}

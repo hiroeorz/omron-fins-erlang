@@ -33,13 +33,25 @@ omron_fins_error_code() = {non_neg_integer(), non_neg_integer()}
 ## Function Index ##
 
 
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#read_alert_history-4">read_alert_history/4</a></td><td>read PLC alert list.</td></tr><tr><td valign="top"><a href="#read_dm_multi_values-3">read_dm_multi_values/3</a></td><td>read DM values from address list.</td></tr><tr><td valign="top"><a href="#read_dm_values-4">read_dm_values/4</a></td><td>read values from DM area.</td></tr><tr><td valign="top"><a href="#start_port-2">start_port/2</a></td><td>start port server.</td></tr><tr><td valign="top"><a href="#write_dm_same_value-5">write_dm_same_value/5</a></td><td>write same value to DM area.</td></tr><tr><td valign="top"><a href="#write_dm_values-4">write_dm_values/4</a></td><td>write values to DM area.</td></tr></table>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#clear_alert_history-2">clear_alert_history/2</a></td><td>clear PLC alert list.</td></tr><tr><td valign="top"><a href="#read_alert_history-4">read_alert_history/4</a></td><td>read PLC alert list.</td></tr><tr><td valign="top"><a href="#read_dm_multi_values-3">read_dm_multi_values/3</a></td><td>read DM values from address list.</td></tr><tr><td valign="top"><a href="#read_dm_values-4">read_dm_values/4</a></td><td>read values from DM area.</td></tr><tr><td valign="top"><a href="#start_port-2">start_port/2</a></td><td>start port server.</td></tr><tr><td valign="top"><a href="#write_dm_same_value-5">write_dm_same_value/5</a></td><td>write same value to DM area.</td></tr><tr><td valign="top"><a href="#write_dm_values-4">write_dm_values/4</a></td><td>write values to DM area.</td></tr></table>
 
 
 <a name="functions"></a>
 
 ## Function Details ##
 
+<a name="clear_alert_history-2"></a>
+
+### clear_alert_history/2 ###
+
+
+<pre><code>
+clear_alert_history(DstIP, Port) -&gt; ok | {error, timeout} | {error, <a href="#type-omron_fins_error_code">omron_fins_error_code()</a>}
+</code></pre>
+
+<ul class="definitions"><li><code>DstIP = <a href="inet.md#type-ip_address">inet:ip_address()</a></code></li><li><code>Port = <a href="inet.md#type-port_number">inet:port_number()</a></code></li></ul>
+
+clear PLC alert list.
 <a name="read_alert_history-4"></a>
 
 ### read_alert_history/4 ###

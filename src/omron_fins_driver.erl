@@ -104,43 +104,6 @@ get_process_identifier(Bin) when is_binary(Bin) ->
     Sid.
 
 %%--------------------------------------------------------------------
-%% @doc parse response.
-%% @end
-%%--------------------------------------------------------------------
--spec parse_response(IOFacility, Bin) -> ok |
-					 {ok, term()} | 
-					 {error, Reason} |
-					 {error, FinishCode1, FinishCode2} when
-      IOFacility :: non_neg_integer(),
-      Bin :: binary(),
-      Reason :: atom(),
-      FinishCode1 :: non_neg_integer(),
-      FinishCode2 :: non_neg_integer().
-parse_response(IOFacility, Bin) when is_binary(Bin) ->
-    <<_Icf:8/unsigned-integer,
-      _Rsv:8/unsigned-integer,
-      _Gct:8/unsigned-integer,
-      _Dna:8/unsigned-integer,
-      _Da1:8/unsigned-integer,
-      _Da2:8/unsigned-integer,
-      _Sna:8/unsigned-integer,
-      _Sa1:8/unsigned-integer,
-      _Sa2:8/unsigned-integer,
-      _Sid:8/unsigned-integer,
-      CodeMR:8/unsigned-integer,
-      CodeSR:8/unsigned-integer,
-      FinishCode1:8/unsigned-integer,
-      FinishCode2:8/unsigned-integer,
-      BodyBin/binary>> = Bin,
-    
-    case {FinishCode1, FinishCode2} of
-	?FINISH_CODE_SUCCESS ->
-	    handle_parse({CodeMR, CodeSR}, {IOFacility, BodyBin});
-	_ ->
-	    handle_response_error(FinishCode1, FinishCode2)
-    end.
-
-%%--------------------------------------------------------------------
 %% @doc create command data.
 %% @end
 %%--------------------------------------------------------------------
@@ -219,7 +182,7 @@ command(Header, {?CODE_READ_IO_MULTI, IOFacility, AddressList})
     fmt_command(Header, ?CODE_READ_IO_MULTI, Body);
 
 %% read alert history
-command(Header, {?CODE_ALERT_HISTORY, StartRecordNo, Count}) 
+command(Header, {?CODE_READ_ALERT_HISTORY, StartRecordNo, Count}) 
   when is_record(Header, fins_header) andalso
        is_integer(StartRecordNo) andalso
        is_integer(Count) ->
@@ -227,7 +190,49 @@ command(Header, {?CODE_ALERT_HISTORY, StartRecordNo, Count})
     Body = <<StartRecordNo:16/big-unsigned-integer,
 	     Count:16/big-unsigned-integer>>,
 
-    fmt_command(Header, ?CODE_ALERT_HISTORY, Body).
+    fmt_command(Header, ?CODE_READ_ALERT_HISTORY, Body);
+
+%% clear alert history
+command(Header, {?CODE_CLEAR_ALERT_HISTORY}) 
+  when is_record(Header, fins_header) ->
+    fmt_command(Header, ?CODE_CLEAR_ALERT_HISTORY, <<>>).
+
+%%--------------------------------------------------------------------
+%% @doc parse response.
+%% @end
+%%--------------------------------------------------------------------
+-spec parse_response(IOFacility, Bin) -> ok |
+					 {ok, term()} | 
+					 {error, Reason} |
+					 {error, FinishCode1, FinishCode2} when
+      IOFacility :: non_neg_integer(),
+      Bin :: binary(),
+      Reason :: atom(),
+      FinishCode1 :: non_neg_integer(),
+      FinishCode2 :: non_neg_integer().
+parse_response(IOFacility, Bin) when is_binary(Bin) ->
+    <<_Icf:8/unsigned-integer,
+      _Rsv:8/unsigned-integer,
+      _Gct:8/unsigned-integer,
+      _Dna:8/unsigned-integer,
+      _Da1:8/unsigned-integer,
+      _Da2:8/unsigned-integer,
+      _Sna:8/unsigned-integer,
+      _Sa1:8/unsigned-integer,
+      _Sa2:8/unsigned-integer,
+      _Sid:8/unsigned-integer,
+      CodeMR:8/unsigned-integer,
+      CodeSR:8/unsigned-integer,
+      FinishCode1:8/unsigned-integer,
+      FinishCode2:8/unsigned-integer,
+      BodyBin/binary>> = Bin,
+    
+    case {FinishCode1, FinishCode2} of
+	?FINISH_CODE_SUCCESS ->
+	    handle_parse({CodeMR, CodeSR}, {IOFacility, BodyBin});
+	_ ->
+	    handle_response_error(FinishCode1, FinishCode2)
+    end.
 
 %%%===================================================================
 %%% Internal Functions
@@ -254,7 +259,7 @@ handle_parse(?CODE_WRITE_IO_SAME_VALUE, {_IO_FACILITY, _BodyBin}) ->
 handle_parse(?CODE_READ_IO_MULTI, {_IO_FACILITY, BodyBin}) ->
     parse_uint_multi_value(BodyBin);
 
-handle_parse(?CODE_ALERT_HISTORY, {_, BodyBin}) ->
+handle_parse(?CODE_READ_ALERT_HISTORY, {_, BodyBin}) ->
     <<_RecordMaxCount:16/big-unsigned-integer,
       TotalHistoryCount:16/big-unsigned-integer,
       ReadCount:16/big-unsigned-integer,
@@ -264,7 +269,16 @@ handle_parse(?CODE_ALERT_HISTORY, {_, BodyBin}) ->
 
     [{total_history_count, TotalHistoryCount},
      {read_count, ReadCount},
-     {history, HistoryList}].
+     {history, HistoryList}];
+
+handle_parse(?CODE_CLEAR_ALERT_HISTORY, {_IO_FACILITY, _BodyBin}) ->
+    ok.
+
+%%--------------------------------------------------------------------
+%% @private
+%% @doc parse alert history object from binary data.
+%% @end
+%%--------------------------------------------------------------------
 
 parse_alert_history(Bin) ->
     parse_alert_history(Bin, []).

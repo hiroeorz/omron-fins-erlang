@@ -17,7 +17,8 @@
 	 write_dm_values/4,
 	 write_dm_same_value/5,
 	 read_dm_multi_values/3,
-	 read_alert_history/4]).
+	 read_alert_history/4,
+	 clear_alert_history/2]).
 
 %%%===================================================================
 %%% API
@@ -116,7 +117,21 @@ read_dm_multi_values(DstIP, Port, AddressList) ->
       StartRecordNo :: non_neg_integer(),
       Count :: non_neg_integer().
 read_alert_history(DstIP, Port, StartRecordNo, Count) ->
-    Command = {?CODE_ALERT_HISTORY, StartRecordNo, Count},
+    Command = {?CODE_READ_ALERT_HISTORY, StartRecordNo, Count},
+    omron_fins_port:send_command(DstIP, Port, Command).
+
+%%--------------------------------------------------------------------
+%% @doc clear PLC alert list.
+%% @end
+%%--------------------------------------------------------------------
+-spec clear_alert_history(DstIP, Port) ->
+				 ok |
+				 {error, timeout} |
+				 {error, omron_fins_error_code()} when
+      DstIP :: inet:ip_address(),
+      Port :: inet:port_number().
+clear_alert_history(DstIP, Port) ->
+    Command = {?CODE_CLEAR_ALERT_HISTORY},
     omron_fins_port:send_command(DstIP, Port, Command).
 
 %%%===================================================================
