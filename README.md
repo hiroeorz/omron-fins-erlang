@@ -13,7 +13,7 @@ Install
 ------------------------------------------------------------------
 
     $ git clone git@github.com:hiroeorz/omron-fins-erlang.git
-    $ cd omron-plc-erlang
+    $ cd omron-fins-erlang
     $ make
 
 Example
