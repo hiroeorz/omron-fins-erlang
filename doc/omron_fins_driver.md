@@ -77,7 +77,7 @@ get process identifier from response command.
 
 
 <pre><code>
-parse_response(IOFacility, Bin) -&gt; ok | {ok, term()} | {error, Reason} | {error, FinishCode1, FinishCode2}
+parse_response(IOFacility, Bin) -&gt; ok | {ok, term()} | {error, Reason} | {error, {FinishCode1, FinishCode2}}
 </code></pre>
 
 <ul class="definitions"><li><code>IOFacility = non_neg_integer()</code></li><li><code>Bin = binary()</code></li><li><code>Reason = atom()</code></li><li><code>FinishCode1 = non_neg_integer()</code></li><li><code>FinishCode2 = non_neg_integer()</code></li></ul>

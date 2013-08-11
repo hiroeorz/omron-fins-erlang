@@ -175,11 +175,16 @@ command(Header, {?CODE_READ_IO_MULTI, IOFacility, AddressList})
 
     AddressBit = 0,
     BinList = [<<IOFacility:8/unsigned-integer,
-	      Address:16/big-unsigned-integer,
-	      AddressBit:8/unsigned-integer>> || Address <- AddressList],
+		 Address:16/big-unsigned-integer,
+		 AddressBit:8/unsigned-integer>> || Address <- AddressList],
 
     Body = list_to_binary(BinList),
     fmt_command(Header, ?CODE_READ_IO_MULTI, Body);
+
+%% read datetime
+command(Header, {?CODE_READ_DATETIME}) 
+  when is_record(Header, fins_header) ->
+    fmt_command(Header, ?CODE_READ_DATETIME, <<>>);
 
 %% release alert history
 command(Header, {?CODE_RELEASE_ALERT, AlertCode}) 
@@ -211,7 +216,7 @@ command(Header, {?CODE_CLEAR_ALERT_HISTORY})
 -spec parse_response(IOFacility, Bin) -> ok |
 					 {ok, term()} | 
 					 {error, Reason} |
-					 {error, FinishCode1, FinishCode2} when
+					 {error, {FinishCode1, FinishCode2}} when
       IOFacility :: non_neg_integer(),
       Bin :: binary(),
       Reason :: atom(),
@@ -265,6 +270,9 @@ handle_parse(?CODE_WRITE_IO_SAME_VALUE, {_IO_FACILITY, _BodyBin}) ->
 
 handle_parse(?CODE_READ_IO_MULTI, {_IO_FACILITY, BodyBin}) ->
     parse_uint_multi_value(BodyBin);
+
+handle_parse(?CODE_READ_DATETIME, {_, BodyBin}) ->
+    parse_datetime(BodyBin);
 
 handle_parse(?CODE_RELEASE_ALERT, {_, <<>>}) ->
     ok;
@@ -320,6 +328,24 @@ parse_alert_history(Bin, Results) when byte_size(Bin) > 0 ->
 	     {datetime, DateTime}],
 
     parse_alert_history(TailBin, [Alert | Results]).
+
+parse_datetime(Bin) ->
+    <<Year10:4/unsigned-integer,      Year1:4/unsigned-integer,     %% BCD
+      Month10:4/unsigned-integer,     Month1:4/unsigned-integer,    %% BCD
+      Day10:4/unsigned-integer,       Day1:4/unsigned-integer,      %% BCD
+      Hour10:4/unsigned-integer,      Hour1:4/unsigned-integer,     %% BCD
+      Min10:4/unsigned-integer,       Min1:4/unsigned-integer,      %% BCD
+      Sec10:4/unsigned-integer,       Sec1:4/unsigned-integer,      %% BCD
+      DayOfWeek:8/unsigned-integer >> = Bin,
+
+    Year = 2000 + Year10 * 10 + Year1,
+    Month = Month10 * 10 + Month1,
+    Day = Day10 * 10 + Day1,
+    Hour = Hour10 * 10 + Hour1,
+    Min = Min10 * 10 + Min1,
+    Sec = Sec10 * 10 + Sec1,
+    [{datetime,    {{Year, Month, Day}, {Hour, Min, Sec}}},
+     {day_of_week, DayOfWeek}].
 
 %%--------------------------------------------------------------------
 %% @private
