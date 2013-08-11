@@ -181,6 +181,13 @@ command(Header, {?CODE_READ_IO_MULTI, IOFacility, AddressList})
     Body = list_to_binary(BinList),
     fmt_command(Header, ?CODE_READ_IO_MULTI, Body);
 
+%% release alert history
+command(Header, {?CODE_RELEASE_ALERT, AlertCode}) 
+  when is_record(Header, fins_header) andalso
+       is_integer(AlertCode) ->
+    Body = <<AlertCode:16/big-unsigned-integer>>,
+    fmt_command(Header, ?CODE_RELEASE_ALERT, Body);
+
 %% read alert history
 command(Header, {?CODE_READ_ALERT_HISTORY, StartRecordNo, Count}) 
   when is_record(Header, fins_header) andalso
@@ -259,6 +266,9 @@ handle_parse(?CODE_WRITE_IO_SAME_VALUE, {_IO_FACILITY, _BodyBin}) ->
 handle_parse(?CODE_READ_IO_MULTI, {_IO_FACILITY, BodyBin}) ->
     parse_uint_multi_value(BodyBin);
 
+handle_parse(?CODE_RELEASE_ALERT, {_, <<>>}) ->
+    ok;
+
 handle_parse(?CODE_READ_ALERT_HISTORY, {_, BodyBin}) ->
     <<_RecordMaxCount:16/big-unsigned-integer,
       TotalHistoryCount:16/big-unsigned-integer,
@@ -271,7 +281,7 @@ handle_parse(?CODE_READ_ALERT_HISTORY, {_, BodyBin}) ->
      {read_count, ReadCount},
      {history, HistoryList}];
 
-handle_parse(?CODE_CLEAR_ALERT_HISTORY, {_IO_FACILITY, _BodyBin}) ->
+handle_parse(?CODE_CLEAR_ALERT_HISTORY, {_, _BodyBin}) ->
     ok.
 
 %%--------------------------------------------------------------------

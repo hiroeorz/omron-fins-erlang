@@ -17,6 +17,7 @@
 	 write_dm_values/4,
 	 write_dm_same_value/5,
 	 read_dm_multi_values/3,
+	 release_alert/3,
 	 read_alert_history/4,
 	 clear_alert_history/2]).
 
@@ -102,6 +103,26 @@ write_dm_same_value(DstIP, Port, StartAddress, Count, Value) ->
       AddressList :: [non_neg_integer()].
 read_dm_multi_values(DstIP, Port, AddressList) ->
     Command = {?CODE_READ_IO_MULTI, ?IO_FACILITY_DM_CHANEL, AddressList},
+    omron_fins_port:send_command(DstIP, Port, Command).
+
+
+%%--------------------------------------------------------------------
+%% @doc release alert in PLC.
+%% @end
+%%--------------------------------------------------------------------
+-spec release_alert(DstIP, Port, AlertCodeStr) -> 
+			   ok |
+			   {error, timeout} |
+			   {error, omron_fins_error_code()} when
+      DstIP :: inet:ip_address(),
+      Port :: inet:port_number(),
+      AlertCodeStr :: list() | {non_neg_integer() | non_neg_integer()}.
+release_alert(DstIP, Port, AlertCodeStr) when is_list(AlertCodeStr) ->
+    AlertCode = list_to_integer(AlertCodeStr, 16),
+    release_alert(DstIP, Port, AlertCode);
+
+release_alert(DstIP, Port, AlertCode) when is_integer(AlertCode) ->
+    Command = {?CODE_RELEASE_ALERT, AlertCode},
     omron_fins_port:send_command(DstIP, Port, Command).
 
 %%--------------------------------------------------------------------
