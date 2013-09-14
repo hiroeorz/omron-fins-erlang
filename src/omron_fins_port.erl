@@ -13,6 +13,11 @@
 %% Include
 -include("omron_fins.hrl").
 
+%% Include if TEST
+-ifdef(TEST).
+-include_lib("eunit/include/eunit.hrl").
+-endif.
+
 %% API
 -export([start_link/2, 
 	 send_command/3]).
@@ -109,15 +114,24 @@ init([Port, {_,_,_,SrcIPNode} = SrcIPAddress]) ->
 handle_call({send_command, {_,_,_,DstIPNode} = DstIP, Command}, 
 	    {Pid, _Ref}, #state{header = H} = State) ->
     Identifier = State#state.identifier,
+
     Port = State#state.port,
     Sock = State#state.socket,
 
     NewState = set_process_identifier(Pid, State),
     H1 = omron_fins_driver:update_header(DstIPNode, Identifier, H),
     Bin = omron_fins_driver:command(H1, Command),
-    io:format("send command: ~s~n", [unpack_hex(Bin)]),
+    %%io:format("send command: ~p~n", [Bin]),
     ok = gen_udp:send(Sock, DstIP, Port, Bin),
-    {reply, ok, NewState}.
+    {reply, ok, NewState};
+
+%% for test
+handle_call(reset_identifier, _From, State) ->
+    {reply, ok, State#state{identifier = 1}};
+
+%% for test
+handle_call(stop, _From, State) ->
+    {stop, normal, ok, State}.
 
 %%--------------------------------------------------------------------
 %% @private
@@ -143,6 +157,7 @@ handle_cast(_Msg, State) ->
 %% @end
 %%--------------------------------------------------------------------
 handle_info({udp, _Sock, _Host, _Port, Bin}, State) ->
+    %%io:format("recv info: ~p~n", [Bin]),
     Identifier = omron_fins_driver:get_process_identifier(Bin),
 
     NewState = case get_process_pid(Identifier, State) of
@@ -155,7 +170,7 @@ handle_info({udp, _Sock, _Host, _Port, Bin}, State) ->
     {noreply, NewState};
 
 handle_info(Info, State) ->
-    io:format("unknown info: ~p", [Info]),
+    io:format("unknown info: ~p~n", [Info]),
     {noreply, State}.
 
 %%--------------------------------------------------------------------
@@ -188,34 +203,62 @@ code_change(_OldVsn, State, _Extra) ->
 %%% Internal functions
 %%%===================================================================
 
+%%--------------------------------------------------------------------
+%% @private
+%% @doc プロセスと識別数値の組み合わせを保存したStateをかえす
+%% @end
+%%--------------------------------------------------------------------
+-spec set_process_identifier(pid(), #state{}) -> #state{}.
 set_process_identifier(Pid, State) ->
     Dict = State#state.process_tbl,
     Identifier = State#state.identifier,
     NewDict = dict:store(Identifier, Pid, Dict),
     
     NextIdentifier = if Identifier >= 16#FF ->
-			    16#00;
+			    1;
 		       true ->
 			    Identifier + 1
 		    end,
 
     State#state{process_tbl = NewDict, identifier = NextIdentifier}.
 
+%%--------------------------------------------------------------------
+%% @private
+%% @doc プロセスと識別数値の組み合わせを削除したStateをかえす
+%% @end
+%%--------------------------------------------------------------------
+-spec delete_process_identifier(Identifier, #state{}) -> #state{} when
+      Identifier :: non_neg_integer().
 delete_process_identifier(Identifier, State) ->
     Dict = State#state.process_tbl,
     NewDict = dict:erase(Identifier, Dict),
     State#state{process_tbl = NewDict}.
 
+%%--------------------------------------------------------------------
+%% @private
+%% @doc 渡された識別数値にひもづけられたプロセス識別子をかえす
+%% @end
+%%--------------------------------------------------------------------
+-spec get_process_pid(Identifier, #state{}) -> pid() | error when
+      Identifier :: non_neg_integer().
 get_process_pid(Identifier, State) ->
     Dict = State#state.process_tbl,
     dict:find(Identifier, Dict).
 
+%%--------------------------------------------------------------------
+%% @private
+%% @doc gen_serverからの非同期応答を待機し、受け取った値をかえす
+%% @end
+%%--------------------------------------------------------------------
+-spec wait_response() -> term() | 
+			 {error, timeout} | 
+			 {error, {non_neg_integer(), non_neg_integer()}}.
 wait_response() ->
     receive
 	{ok, Bin} ->
 	    case omron_fins_driver:parse_response(?IO_FACILITY_DM_CHANEL, 
 						  Bin) of
-		{error, {ErrCode1, ErrCode2}} -> {error, ErrCode1, ErrCode2};
+		{error, {ErrCode1, ErrCode2}} -> {error, {ErrCode1, ErrCode2}};
 		ok                            -> ok;
 		Val                           -> {ok, Val}
 	    end;

@@ -213,13 +213,12 @@ command(Header, {?CODE_CLEAR_ALERT_HISTORY})
 %% @doc parse response.
 %% @end
 %%--------------------------------------------------------------------
--spec parse_response(IOFacility, Bin) -> ok |
-					 {ok, term()} | 
-					 {error, Reason} |
-					 {error, {FinishCode1, FinishCode2}} when
+-spec parse_response(IOFacility, Bin) -> 
+			    ok |
+			    {ok, term()} | 
+			    {error, {FinishCode1, FinishCode2}} when
       IOFacility :: non_neg_integer(),
       Bin :: binary(),
-      Reason :: atom(),
       FinishCode1 :: non_neg_integer(),
       FinishCode2 :: non_neg_integer().
 parse_response(IOFacility, Bin) when is_binary(Bin) ->
