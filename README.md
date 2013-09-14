@@ -44,7 +44,7 @@ Write DM Same Values
 
     > Val = 0.                      %% Value
     > WordCount = 10.               %% DM Write Count
-    > omron_fins:write_dm_same_values(PLCIPAddress, Port, StartAddress, WordCount, Val).
+    > omron_fins:write_dm_same_value(PLCIPAddress, Port, StartAddress, WordCount, Val).
        ok
 
 Read DM Multi Values
