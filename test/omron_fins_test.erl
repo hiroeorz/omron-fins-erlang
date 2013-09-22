@@ -27,15 +27,8 @@ start_port_test_() ->
 read_dm_values_test_() ->
     {spawn, 
      {setup, 
-      fun()  -> 
-	      meck:new(gen_udp, [unstick, passthrough]),
-	      meck:expect(gen_udp, open, 2, {ok, sock}),
-	      {ok, _} = omron_fins:start_port({127,0,0,1}, 9600)
-      end, 
-      fun(_) ->
-	      stop_port(),
-	      meck:unload(gen_udp)
-      end,
+      fun()  -> setup() end, 
+      fun(_) -> teardown() end,
       [
        {"DMエリアの値をリストでかえす",
         fun() ->
@@ -127,15 +120,8 @@ read_dm_values_test_() ->
 write_dm_values_test_() ->
     {spawn, 
      {setup, 
-      fun()  -> 
-	      meck:new(gen_udp, [unstick, passthrough]),
-	      meck:expect(gen_udp, open, 2, {ok, sock}),
-	      {ok, _} = omron_fins:start_port({127,0,0,1}, 9600)
-      end, 
-      fun(_) ->
-	      stop_port(),
-	      meck:unload(gen_udp)
-      end,
+      fun()  -> setup() end, 
+      fun(_) -> teardown() end,
       [
        {"DMエリアに値を書き込む",
         fun() ->
@@ -171,15 +157,8 @@ write_dm_values_test_() ->
 write_dm_same_value_test_() ->
     {spawn, 
      {setup, 
-      fun()  -> 
-	      meck:new(gen_udp, [unstick, passthrough]),
-	      meck:expect(gen_udp, open, 2, {ok, sock}),
-	      {ok, _} = omron_fins:start_port({127,0,0,1}, 9600)
-      end, 
-      fun(_) ->
-	      stop_port(),
-	      meck:unload(gen_udp)
-      end,
+      fun()  -> setup() end, 
+      fun(_) -> teardown() end,
       [
        {"DMエリアに値を書き込む",
         fun() ->
@@ -215,15 +194,8 @@ write_dm_same_value_test_() ->
 read_dm_multi_values_test_() ->
     {spawn, 
      {setup, 
-      fun()  -> 
-	      meck:new(gen_udp, [unstick, passthrough]),
-	      meck:expect(gen_udp, open, 2, {ok, sock}),
-	      {ok, _} = omron_fins:start_port({127,0,0,1}, 9600)
-      end, 
-      fun(_) ->
-	      stop_port(),
-	      meck:unload(gen_udp)
-      end,
+      fun()  -> setup() end, 
+      fun(_) -> teardown() end,
       [
        {"DMエリアの値をリストでかえす",
         fun() ->
@@ -259,9 +231,57 @@ read_dm_multi_values_test_() ->
      }
     }.
 
+read_datetime_test_() ->
+    {spawn, 
+     {setup, 
+      fun()  -> setup() end, 
+      fun(_) -> teardown() end,
+      [
+       {"PLC内部の日時をかえす",
+        fun() ->
+		meck:expect(gen_udp, open, 2, {ok, sock}),
+		meck:expect(gen_udp, send, 4, ok),
+
+		Pid = self(),
+		F = fun() ->
+			    PLCIPAddress = {127, 0, 0, 1},
+			    Port = 9600,
+			    
+			    {ok, DateTime} = omron_fins:read_datetime(
+					   PLCIPAddress, Port),
+
+			    OKResult = {{datetime,{{2013,9,22}, {18,25,7}}},
+					{day_of_week,1}},
+
+			    ?assertEqual(OKResult, DateTime),
+			    Pid ! {self(), ok}
+			end,
+		TestPid = spawn_link(F), timer:sleep(10),
+
+		Bin = <<192,0,7,0,5,0,0,6,0,1,7,1,0,0,19,9,34,24,37,7,0>>,
+		port_pid() ! {udp, sock, {127,0, 0, 1}, 9600, Bin},
+		
+		receive
+		    {TestPid, ok} -> success
+		end
+	end
+       }
+      ]
+     }
+    }.
+
 %%%===================================================================
 %%% Internal functions
 %%%===================================================================
+
+setup() ->
+    meck:new(gen_udp, [unstick, passthrough]),
+    meck:expect(gen_udp, open, 2, {ok, sock}),
+    {ok, _} = omron_fins:start_port({127,0,0,1}, 9600).
+    
+teardown() ->
+    stop_port(),
+    meck:unload(gen_udp).
 
 port_pid() ->
     ChildList = supervisor:which_children(omron_fins_sup),

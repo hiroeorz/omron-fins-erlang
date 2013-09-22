@@ -328,6 +328,8 @@ parse_alert_history(Bin, Results) when byte_size(Bin) > 0 ->
 
     parse_alert_history(TailBin, [Alert | Results]).
 
+%% The day_of_week that return value of fins is 0..6. 
+%% So it fit to calendar:daynum style (1..7).
 parse_datetime(Bin) ->
     <<Year10:4/unsigned-integer,      Year1:4/unsigned-integer,     %% BCD
       Month10:4/unsigned-integer,     Month1:4/unsigned-integer,    %% BCD
@@ -343,8 +345,8 @@ parse_datetime(Bin) ->
     Hour = Hour10 * 10 + Hour1,
     Min = Min10 * 10 + Min1,
     Sec = Sec10 * 10 + Sec1,
-    [{datetime,    {{Year, Month, Day}, {Hour, Min, Sec}}},
-     {day_of_week, DayOfWeek}].
+    {{datetime,    {{Year, Month, Day}, {Hour, Min, Sec}}},
+     {day_of_week, DayOfWeek + 1}}.
 
 %%--------------------------------------------------------------------
 %% @private

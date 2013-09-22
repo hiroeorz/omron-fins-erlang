@@ -22,6 +22,10 @@
 	 read_alert_history/4,
 	 clear_alert_history/2]).
 
+-type plc_datetime() :: {datetime, calendar:datetime()}.
+-type plc_daynum()   :: {day_of_week, calendar:daynum()}.
+-type plc_datetime_and_daynum() :: {plc_datetime(), plc_daynum()}.
+
 %%%===================================================================
 %%% API
 %%%===================================================================
@@ -107,6 +111,17 @@ read_dm_multi_values(DstIP, Port, AddressList) ->
     omron_fins_port:send_command(DstIP, Port, Command).
 
 
+%%--------------------------------------------------------------------
+%% @doc get datetime from PLC. 
+%%
+%% day_of_week value fit to Erlang calendar:daynum (1..7).
+%% @end
+%%--------------------------------------------------------------------
+-spec read_datetime(DstIP, Port) -> {ok, plc_datetime_and_daynum()} |
+				    {error, timeout} |
+				    {error, omron_fins_error_code()} when
+      DstIP :: inet:ipaddress(),
+      Port :: inet:port_number().
 read_datetime(DstIP, Port) ->
     Command = {?CODE_READ_DATETIME},
     omron_fins_port:send_command(DstIP, Port, Command).

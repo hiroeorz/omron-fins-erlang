@@ -52,3 +52,8 @@ Read DM Multi Values
     > AddressList = [1, 3, 5, 6].
     > omron_fins:read_dm_multi_values(PLCIPAddress, Port, AddressList).
       {ok, [0,0,2,0]}
+
+Read PLC internal Datetime
+
+    > omron_fins:read_datetime(PLCIPAddress, Port).
+      {ok, {{datetime,{{2013,9,22},{18,25,7}}},{day_of_week,1}} }
