@@ -26,6 +26,10 @@
 -type plc_daynum()   :: {day_of_week, calendar:daynum()}.
 -type plc_datetime_and_daynum() :: {plc_datetime(), plc_daynum()}.
 
+-type send_command_error() :: {error, timeout}  |
+			      {error, enetdown} |
+			      {error, omron_fins_error_code()}.
+
 %%%===================================================================
 %%% API
 %%%===================================================================
@@ -49,9 +53,8 @@ start_port(SrcIP, Port) ->
 %% @end
 %%--------------------------------------------------------------------
 -spec read_dm_values(DstIP, Port, StartAddress, Count) -> 
-			    {ok, [non_neg_integer()]} |
-			    {error, timeout} |
-			    {error, omron_fins_error_code()} when
+			    {ok, [non_neg_integer()]} | 
+			    send_command_error() when
       DstIP :: inet:ip_address(),
       Port :: inet:port_number(),
       StartAddress :: non_neg_integer(),
@@ -65,9 +68,7 @@ read_dm_values(DstIP, Port, StartAddress, Count) ->
 %% @end
 %%--------------------------------------------------------------------
 -spec write_dm_values(DstIP, Port, StartAddress, List) -> 
-			    ok |
-			    {error, timeout} |
-			    {error, omron_fins_error_code()} when
+			     ok | send_command_error() when
       DstIP :: inet:ip_address(),
       Port :: inet:port_number(),
       StartAddress :: non_neg_integer(),
@@ -82,9 +83,7 @@ write_dm_values(DstIP, Port, StartAddress, List) ->
 %% @end
 %%--------------------------------------------------------------------
 -spec write_dm_same_value(DstIP, Port, StartAddress, Count, Value) -> 
-				 ok |
-				 {error, timeout} |
-				 {error, omron_fins_error_code()} when
+				 ok | send_command_error() when
       DstIP :: inet:ip_address(),
       Port :: inet:port_number(),
       StartAddress :: non_neg_integer(),
@@ -101,8 +100,7 @@ write_dm_same_value(DstIP, Port, StartAddress, Count, Value) ->
 %%--------------------------------------------------------------------
 -spec read_dm_multi_values(DstIP, Port, AddressList) -> 
 				  {ok, [non_neg_integer()]} |
-				  {error, timeout} |
-				  {error, omron_fins_error_code()} when
+				  send_command_error() when
       DstIP :: inet:ip_address(),
       Port :: inet:port_number(),
       AddressList :: [non_neg_integer()].
@@ -118,8 +116,7 @@ read_dm_multi_values(DstIP, Port, AddressList) ->
 %% @end
 %%--------------------------------------------------------------------
 -spec read_datetime(DstIP, Port) -> {ok, plc_datetime_and_daynum()} |
-				    {error, timeout} |
-				    {error, omron_fins_error_code()} when
+				    send_command_error() when
       DstIP :: inet:ipaddress(),
       Port :: inet:port_number().
 read_datetime(DstIP, Port) ->
@@ -131,9 +128,7 @@ read_datetime(DstIP, Port) ->
 %% @end
 %%--------------------------------------------------------------------
 -spec release_alert(DstIP, Port, AlertCodeStr) -> 
-			   ok |
-			   {error, timeout} |
-			   {error, omron_fins_error_code()} when
+			   ok | send_command_error() when
       DstIP :: inet:ip_address(),
       Port :: inet:port_number(),
       AlertCodeStr :: list() | {non_neg_integer() | non_neg_integer()}.
@@ -150,9 +145,7 @@ release_alert(DstIP, Port, AlertCode) when is_integer(AlertCode) ->
 %% @end
 %%--------------------------------------------------------------------
 -spec read_alert_history(DstIP, Port, StartRecordNo, Count) ->
-				{ok, [tuple()]} |
-				{error, timeout} |
-				{error, omron_fins_error_code()} when
+				{ok, [tuple()]} | send_command_error() when
       DstIP :: inet:ip_address(),
       Port :: inet:port_number(),
       StartRecordNo :: non_neg_integer(),
@@ -166,9 +159,7 @@ read_alert_history(DstIP, Port, StartRecordNo, Count) ->
 %% @end
 %%--------------------------------------------------------------------
 -spec clear_alert_history(DstIP, Port) ->
-				 ok |
-				 {error, timeout} |
-				 {error, omron_fins_error_code()} when
+				 ok | send_command_error() when
       DstIP :: inet:ip_address(),
       Port :: inet:port_number().
 clear_alert_history(DstIP, Port) ->

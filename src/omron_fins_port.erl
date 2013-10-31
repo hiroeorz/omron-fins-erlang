@@ -122,8 +122,13 @@ handle_call({send_command, {_,_,_,DstIPNode} = DstIP, Command},
     H1 = omron_fins_driver:update_header(DstIPNode, Identifier, H),
     Bin = omron_fins_driver:command(H1, Command),
     %%io:format("send command: ~p~n", [Bin]),
-    ok = gen_udp:send(Sock, DstIP, Port, Bin),
-    {reply, ok, NewState};
+
+    case gen_udp:send(Sock, DstIP, Port, Bin) of
+	ok ->
+	    {reply, ok, NewState};
+	{error, Reason} ->
+	    {reply, {error, Reason}, NewState}
+    end;
 
 %% for test
 handle_call(reset_identifier, _From, State) ->
