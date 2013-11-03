@@ -72,7 +72,7 @@ plc_daynum() = {day_of_week, <a href="calendar.md#type-daynum">calendar:daynum()
 
 
 <pre><code>
-send_command_error() = {error, timeout} | {error, enetdown} | {error, <a href="#type-omron_fins_error_code">omron_fins_error_code()</a>}
+send_command_error() = {error, timeout} | {error, enetdown} | {error, <a href="inet.md#type-posix">inet:posix()</a>} | {error, <a href="#type-omron_fins_error_code">omron_fins_error_code()</a>}
 </code></pre>
 
 
@@ -161,7 +161,7 @@ read values from DM area.
 release_alert(DstIP, Port, AlertCodeStr) -&gt; ok | <a href="#type-send_command_error">send_command_error()</a>
 </code></pre>
 
-<ul class="definitions"><li><code>DstIP = <a href="inet.md#type-ip_address">inet:ip_address()</a></code></li><li><code>Port = <a href="inet.md#type-port_number">inet:port_number()</a></code></li><li><code>AlertCodeStr = list() | {non_neg_integer() | non_neg_integer()}</code></li></ul>
+<ul class="definitions"><li><code>DstIP = <a href="inet.md#type-ip_address">inet:ip_address()</a></code></li><li><code>Port = <a href="inet.md#type-port_number">inet:port_number()</a></code></li><li><code>AlertCodeStr = list() | non_neg_integer()</code></li></ul>
 
 release alert in PLC.
 <a name="start_port-2"></a>

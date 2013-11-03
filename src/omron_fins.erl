@@ -28,6 +28,7 @@
 
 -type send_command_error() :: {error, timeout}  |
 			      {error, enetdown} |
+			      {error, inet:posix()} | 
 			      {error, omron_fins_error_code()}.
 
 %%%===================================================================
@@ -131,7 +132,7 @@ read_datetime(DstIP, Port) ->
 			   ok | send_command_error() when
       DstIP :: inet:ip_address(),
       Port :: inet:port_number(),
-      AlertCodeStr :: list() | {non_neg_integer() | non_neg_integer()}.
+      AlertCodeStr :: list() | non_neg_integer().
 release_alert(DstIP, Port, AlertCodeStr) when is_list(AlertCodeStr) ->
     AlertCode = list_to_integer(AlertCodeStr, 16),
     release_alert(DstIP, Port, AlertCode);

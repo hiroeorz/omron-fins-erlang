@@ -59,7 +59,8 @@ start_link(SrcIPAddress, Port) ->
 %%--------------------------------------------------------------------
 -spec send_command(DstIP, Port, Command) -> ok | 
 					    {ok, Data} |
-					    {error, port_not_started} when
+					    {error, inet:posix()} |
+					    inet:posix() when
       DstIP :: inet:ip_address(),
       Port :: inet:port_number(),
       Command :: tuple(),
@@ -67,8 +68,13 @@ start_link(SrcIPAddress, Port) ->
 send_command(DstIP, Port, Command) ->
     case omron_fins_port_manager:get_pid(Port) of
 	{ok, Pid} ->
-	    ok = gen_server:call(Pid, {send_command, DstIP, Command}),
-	    wait_response();
+	    case gen_server:call(Pid, {send_command, DstIP, Command}) of
+		ok ->
+		    wait_response();
+		{error, Reason} ->
+		    error_logger:error_msg("plc network is down."),
+		    {error, Reason}
+	    end;
 	{error, not_found} ->
 	    {error, port_not_started}
     end.

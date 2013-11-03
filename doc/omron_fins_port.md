@@ -31,7 +31,7 @@ Starts the server.</td></tr></table>
 
 
 <pre><code>
-send_command(DstIP, Port, Command) -&gt; ok | {ok, Data} | {error, port_not_started}
+send_command(DstIP, Port, Command) -&gt; ok | {ok, Data} | {error, <a href="inet.md#type-posix">inet:posix()</a>} | <a href="inet.md#type-posix">inet:posix()</a>
 </code></pre>
 
 <ul class="definitions"><li><code>DstIP = <a href="inet.md#type-ip_address">inet:ip_address()</a></code></li><li><code>Port = <a href="inet.md#type-port_number">inet:port_number()</a></code></li><li><code>Command = tuple()</code></li><li><code>Data = term()</code></li></ul>
