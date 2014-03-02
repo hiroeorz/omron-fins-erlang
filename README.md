@@ -21,13 +21,13 @@ Example
 
 Start Server
 
-    > SrcIPAddress = {192,168,0,5}.
+    > SrcIPAddress = "192.168.0.5".
     > Port = 9600.
     > {ok, _Pid} = omron_fins:start_port(SrcIPAddress, Port).
 
 Read DM Values.
 
-    > PLCIPAddress = {192,168,0,6}. %% PLC IP Address
+    > PLCIPAddress = "192.168.0.6". %% PLC IP Address
     > Port = 9600.                  %% Port number.
     > StartAddress = 1.             %% DM Start Address
     > WordCount = 10.               %% DM Read Count

@@ -290,7 +290,7 @@ wait_response() ->
 
 %%--------------------------------------------------------------------
 %% @private
-%% @doc unpack hex string for log output.
+%% @doc Unpack hex string for log output.
 %% @end
 %%--------------------------------------------------------------------
 -spec unpack_hex(binary()) -> binary().
@@ -299,6 +299,12 @@ unpack_hex(Bin) ->
     StrList = [string:right(integer_to_list(Unit, 16), 2, $0) || Unit <- List],
     list_to_binary(StrList).
 
+%%--------------------------------------------------------------------
+%% @private
+%% @doc Transfer string ipaddress(eg."192.168.0.1") to tuple(eg.{192,168,0,1}).
+%% @end
+%%--------------------------------------------------------------------
+-spec to_tuple_address(binary() | list()) -> tuple().
 to_tuple_address(SrcIPAddress) when is_binary(SrcIPAddress) ->
     to_tuple_address(binary_to_list(SrcIPAddress));
 

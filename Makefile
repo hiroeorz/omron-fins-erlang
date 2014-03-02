@@ -7,7 +7,7 @@ DIALYZER=dialyzer
 
 all: update-deps get-deps clean dev #test generate
 
-dev: compile xref dialyzer edoc
+dev: compile xref edoc
 
 
 generate:
