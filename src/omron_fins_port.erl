@@ -94,6 +94,10 @@ send_command(DstIP, Port, Command) ->
 %%                     {stop, Reason}
 %% @end
 %%--------------------------------------------------------------------
+init([Port, SrcIPAddress]) when is_binary(SrcIPAddress);
+				is_list(SrcIPAddress) ->
+    init([Port, to_tuple_address(SrcIPAddress)]);
+
 init([Port, {_,_,_,SrcIPNode} = SrcIPAddress]) ->
     {ok, Sock} = gen_udp:open(Port, [binary, {active, true}]),
     Header = omron_fins_driver:create_header(0, SrcIPNode),
@@ -117,6 +121,11 @@ init([Port, {_,_,_,SrcIPNode} = SrcIPAddress]) ->
 %%                                   {stop, Reason, State}
 %% @end
 %%--------------------------------------------------------------------
+handle_call({send_command, DstIP, Command}, From, State) 
+  when is_binary(DstIP);
+       is_list(DstIP) ->
+    handle_call({send_command, to_tuple_address(DstIP), Command}, From, State);
+
 handle_call({send_command, {_,_,_,DstIPNode} = DstIP, Command}, 
 	    {Pid, _Ref}, #state{header = H} = State) ->
     Identifier = State#state.identifier,
@@ -289,3 +298,12 @@ unpack_hex(Bin) ->
     List = binary_to_list(Bin),
     StrList = [string:right(integer_to_list(Unit, 16), 2, $0) || Unit <- List],
     list_to_binary(StrList).
+
+to_tuple_address(SrcIPAddress) when is_binary(SrcIPAddress) ->
+    to_tuple_address(binary_to_list(SrcIPAddress));
+
+to_tuple_address(SrcIPAddress) when is_list(SrcIPAddress) ->
+    StrList = re:split(SrcIPAddress,"[\.]",[{return, list}]),
+    [A1, A2, A3, A4] = [list_to_integer(A) || A <- StrList],
+    {A1, A2, A3, A4}.
+
