@@ -1,5 +1,5 @@
 ===================================================================
-Omron Fins Client for Erlang/OTP Application.
+Omron Fins Client for Erlang/OTP Application. [![Build Status](https://travis-ci.org/hiroeorz/omron-fins-erlang.svg?branch=master)](https://travis-ci.org/hiroeorz/omron-fins-erlang/builds/25493984)
 ====================================================================
 
 omron-fins-erlang is fins command client written by Erlang.
