@@ -33,7 +33,7 @@
 		ip_address               :: inet:ip_address(),
 		socket                   :: gen_udp:socket(),
 		header                   :: #fins_header{},
-		process_tbl = dict:new() :: dict(),
+		process_tbl = dict:new() :: dict:dict(),
 		identifier = 1           :: non_neg_integer()}).
 
 %%%===================================================================

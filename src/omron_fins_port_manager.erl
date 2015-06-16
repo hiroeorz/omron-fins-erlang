@@ -22,7 +22,7 @@
 
 -define(SERVER, ?MODULE). 
 
--record(state, {ports = dict:new() :: dict()}).
+-record(state, {ports = dict:new() :: dict:dict()}).
 
 %%%===================================================================
 %%% API

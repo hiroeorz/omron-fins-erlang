@@ -14,7 +14,7 @@ start_port_test_() ->
 	      meck:unload(gen_udp)
       end,
       [
-       {"起動成功したら{ok, pid()}をかえす",
+       {"Return {ok, pid()} if start_port/2 success.",
         fun() ->
 		{ok, Pid} = omron_fins:start_port({127,0,0,1}, 9600),
 		?assertEqual(true, is_pid(Pid))
@@ -30,7 +30,7 @@ read_dm_values_test_() ->
       fun()  -> setup() end, 
       fun(_) -> teardown() end,
       [
-       {"DMエリアの値をリストでかえす",
+       {"Return DM area values",
         fun() ->
 		meck:expect(gen_udp, open, 2, {ok, sock}),
 		meck:expect(gen_udp, send, 4, ok),
@@ -64,7 +64,7 @@ read_dm_values_test_() ->
 	end
        },
 
-       {"複数プロセスが並列に送受信できる",
+       {"Parallel get values.",
         fun() ->
 		meck:expect(gen_udp, open, 2, {ok, sock}),
 		meck:expect(gen_udp, send, 4, ok),
@@ -123,7 +123,7 @@ write_dm_values_test_() ->
       fun()  -> setup() end, 
       fun(_) -> teardown() end,
       [
-       {"DMエリアに値を書き込む",
+       {"write values to DM area.",
         fun() ->
 		meck:expect(gen_udp, open, 2, {ok, sock}),
 		meck:expect(gen_udp, send, 4, ok),
@@ -160,7 +160,7 @@ write_dm_same_value_test_() ->
       fun()  -> setup() end, 
       fun(_) -> teardown() end,
       [
-       {"DMエリアに値を書き込む",
+       {"write DM area to same values.",
         fun() ->
 		meck:expect(gen_udp, open, 2, {ok, sock}),
 		meck:expect(gen_udp, send, 4, ok),
@@ -197,7 +197,7 @@ read_dm_multi_values_test_() ->
       fun()  -> setup() end, 
       fun(_) -> teardown() end,
       [
-       {"DMエリアの値をリストでかえす",
+       {"Return DM area values.",
         fun() ->
 		meck:expect(gen_udp, open, 2, {ok, sock}),
 		meck:expect(gen_udp, send, 4, ok),
@@ -237,7 +237,7 @@ read_datetime_test_() ->
       fun()  -> setup() end, 
       fun(_) -> teardown() end,
       [
-       {"PLC内部の日時をかえす",
+       {"Return datetime PLC internal",
         fun() ->
 		meck:expect(gen_udp, open, 2, {ok, sock}),
 		meck:expect(gen_udp, send, 4, ok),
