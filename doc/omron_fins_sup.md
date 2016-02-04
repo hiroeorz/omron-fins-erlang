@@ -34,9 +34,7 @@ Starts the supervisor.</td></tr></table>
 <pre><code>
 start_link() -&gt; {ok, Pid} | ignore | {error, Error}
 </code></pre>
-
-<br></br>
-
+<br />
 
 
 Starts the supervisor

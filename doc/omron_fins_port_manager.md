@@ -32,9 +32,7 @@ __Authors:__ HIROE Shin ([`hiroe.orz@gmail.com`](mailto:hiroe.orz@gmail.com)).
 <pre><code>
 delelte_pid(Port::<a href="inet.md#type-port_number">inet:port_number()</a>) -&gt; ok
 </code></pre>
-
-<br></br>
-
+<br />
 
 delete pid from manager.
 <a name="get_pid-1"></a>
@@ -45,9 +43,7 @@ delete pid from manager.
 <pre><code>
 get_pid(Port::<a href="inet.md#type-port_number">inet:port_number()</a>) -&gt; {ok, pid()} | {error, not_found}
 </code></pre>
-
-<br></br>
-
+<br />
 
 get pid to manager by port number.
 <a name="set_pid-2"></a>
@@ -58,9 +54,7 @@ get pid to manager by port number.
 <pre><code>
 set_pid(Port::<a href="inet.md#type-port_number">inet:port_number()</a>, Pid::pid()) -&gt; ok
 </code></pre>
-
-<br></br>
-
+<br />
 
 set new port and pid to manager.
 <a name="start_link-0"></a>
@@ -71,8 +65,6 @@ set new port and pid to manager.
 <pre><code>
 start_link() -&gt; {ok, pid()} | ignore | {error, atom()}
 </code></pre>
-
-<br></br>
-
+<br />
 
 Starts the server

@@ -512,8 +512,7 @@ sna(SrcNetwork) when is_integer(SrcNetwork) andalso
 %% @end
 %%--------------------------------------------------------------------
 sa1(Node) when is_integer(Node) andalso
-	       Node =:= 16#00 orelse %% self
-	       (0 =< Node andalso Node =< 16#20) ->
+	       Node >= 0 ->
     <<Node:8/unsigned-integer>>.
 
 %%--------------------------------------------------------------------

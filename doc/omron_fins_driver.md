@@ -103,8 +103,6 @@ send request to PLC.
 <pre><code>
 update_header(DstIPNode::non_neg_integer(), Identifier::non_neg_integer(), Fins_header::#fins_header{dst_address = undefined | non_neg_integer(), dst_node = undefined | non_neg_integer(), dst_unit_no = undefined | non_neg_integer(), src_address = undefined | non_neg_integer(), src_node = undefined | non_neg_integer(), src_unit_no = undefined | non_neg_integer(), identifier = undefined | non_neg_integer()}) -&gt; #fins_header{dst_address = undefined | non_neg_integer(), dst_node = undefined | non_neg_integer(), dst_unit_no = undefined | non_neg_integer(), src_address = undefined | non_neg_integer(), src_node = undefined | non_neg_integer(), src_unit_no = undefined | non_neg_integer(), identifier = undefined | non_neg_integer()}
 </code></pre>
-
-<br></br>
-
+<br />
 
 set plc process identifier to header record.
