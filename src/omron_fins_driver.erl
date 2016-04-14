@@ -481,7 +481,7 @@ dna(DstNetwork) when is_integer(DstNetwork) andalso
 da1(Node) when is_integer(Node) andalso
 	       Node =:= 16#00 orelse %% self
 	       Node =:= 16#FF orelse %% broadcast
-	       (0 =< Node andalso Node =< 16#20) ->
+	       0 =< Node ->
     <<Node:8/unsigned-integer>>.
 
 %%--------------------------------------------------------------------
