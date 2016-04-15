@@ -99,7 +99,7 @@ init([Port, SrcIPAddress]) when is_binary(SrcIPAddress);
     init([Port, to_tuple_address(SrcIPAddress)]);
 
 init([Port, {_,_,_,SrcIPNode} = SrcIPAddress]) ->
-    {ok, Sock} = gen_udp:open(Port, [binary, {active, true}]),
+    {ok, Sock} = gen_udp:open(Port, [{ip, SrcIPAddress}, binary, {active, true}]),
     Header = omron_fins_driver:create_header(0, SrcIPNode),
     ok = omron_fins_port_manager:set_pid(Port, self()),
     {ok, #state{port = Port,
