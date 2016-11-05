@@ -5,14 +5,14 @@
 * [Function Index](#index)
 * [Function Details](#functions)
 
-
-
 Supervisor for omron_fins_port_manager and each port server.
+
 Copyright (c) (C) 2013, HIROE Shin
 
 __Behaviours:__ [`supervisor`](supervisor.md).
 
 __Authors:__ HIROE Shin ([`hiroe.orz@gmail.com`](mailto:hiroe.orz@gmail.com)).
+
 <a name="index"></a>
 
 ## Function Index ##
@@ -30,12 +30,10 @@ Starts the supervisor.</td></tr></table>
 
 ### start_link/0 ###
 
-
 <pre><code>
 start_link() -&gt; {ok, Pid} | ignore | {error, Error}
 </code></pre>
 <br />
-
 
 Starts the supervisor
 

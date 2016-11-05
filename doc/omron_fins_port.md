@@ -5,13 +5,14 @@
 * [Function Index](#index)
 * [Function Details](#functions)
 
-
 .
+
 Copyright (c) (C) 2013, HIROE Shin
 
 __Behaviours:__ [`gen_server`](gen_server.md).
 
 __Authors:__ HIROE Shin ([`hiroe.orz@gmail.com`](mailto:hiroe.orz@gmail.com)).
+
 <a name="index"></a>
 
 ## Function Index ##
@@ -29,7 +30,6 @@ Starts the server.</td></tr></table>
 
 ### send_command/3 ###
 
-
 <pre><code>
 send_command(DstIP, Port, Command) -&gt; ok | {ok, Data} | {error, <a href="inet.md#type-posix">inet:posix()</a>} | <a href="inet.md#type-posix">inet:posix()</a>
 </code></pre>
@@ -37,10 +37,10 @@ send_command(DstIP, Port, Command) -&gt; ok | {ok, Data} | {error, <a href="inet
 <ul class="definitions"><li><code>DstIP = <a href="inet.md#type-ip_address">inet:ip_address()</a></code></li><li><code>Port = <a href="inet.md#type-port_number">inet:port_number()</a></code></li><li><code>Command = tuple()</code></li><li><code>Data = term()</code></li></ul>
 
 Send fins command to PLC.
+
 <a name="start_link-2"></a>
 
 ### start_link/2 ###
-
 
 <pre><code>
 start_link(Port, SrcIPAddress) -&gt; {ok, pid()} | ignore | {error, atom()}
@@ -48,5 +48,5 @@ start_link(Port, SrcIPAddress) -&gt; {ok, pid()} | ignore | {error, atom()}
 
 <ul class="definitions"><li><code>Port = <a href="inet.md#type-port_number">inet:port_number()</a></code></li><li><code>SrcIPAddress = <a href="inet.md#type-ip_address">inet:ip_address()</a></code></li></ul>
 
-
 Starts the server
+
